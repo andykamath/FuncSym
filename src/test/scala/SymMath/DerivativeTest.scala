@@ -42,7 +42,6 @@ class DerivativeTest extends FlatSpec with Matchers {
 
   "Any derivative" should "follow the chain rule" in {
     val x = new SymVar("x")
-    println((x * ((x ^ new Value(2)) + new Value(5))).differentiate(x))
     assert((x * ((x ^ new Value(2)) + new Value(5))).differentiate(x).equals(((x ^ new Value(2)) + new Value(5)) + new Value(2) * (x ^ new Value(3))))
 
   }

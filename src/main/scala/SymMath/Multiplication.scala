@@ -1,5 +1,7 @@
 package SymMath
 
+import scala.collection.immutable.::
+
 class Multiplication(val symbols: Operation*) extends Operation {
   override def isNegative: Boolean = symbols.count {
     _.isNegative
@@ -11,7 +13,17 @@ class Multiplication(val symbols: Operation*) extends Operation {
     thoseSymbols.equals(theseSymbols)
   }
 
-  private def mergeTerms(symbols: Operation*): Multiplication = new Multiplication(this.symbols ++ symbols: _*)
+  private def mergeTerms(symbols: Operation*): Operation =
+    symbols.map(x => this.addTerm(x, this.symbols)).reduce((x, y) => x + y)
+
+  @scala.annotation.tailrec
+  private def addTerm(v: Operation, symbols: Seq[Operation]): Operation = {
+    val hd::tail = symbols
+    hd match {
+      case hd: Value => hd + v + tail.reduce((x, y) => x + y)
+      case _ => addTerm(v, tail)
+    }
+  }
 
   private def factorOut(symbols: Operation*): Operation = {
     var newOp: Operation = new Multiplication(symbols:_*)
@@ -29,6 +41,7 @@ class Multiplication(val symbols: Operation*) extends Operation {
     }
   }
 
+  // TODO: Add factoring (x + 2)^2 == x^2 + 2x + 4
   override def equals(that: Any): Boolean =
     that match {
       case that: Multiplication => that.hasSameTerms(this.symbols: _*)

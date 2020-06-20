@@ -10,4 +10,10 @@ class MultiplicationTest extends FlatSpec with Matchers {
     assert((inf * inf).equals(inf))
     assert((const * inf).equals(inf))
   }
+
+  "Does factoring work?" should "not work" in {
+    val x = new SymVar("x")
+    println(((x + new Value(2)) ^ new Value(2)))
+    assert(((x + new Value(2)) ^ new Value(2)).equals((x ^ new Value(2)) + new Value(2) * x + new Value(4)))
+  }
 }
