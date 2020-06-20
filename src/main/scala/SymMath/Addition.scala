@@ -3,14 +3,12 @@ package SymMath
 import scala.collection.immutable.::
 
 class Addition(val symbols: Operation*) extends Operation {
-
-
   override def doOperation(): Operation = {
     symbols.reduce((x: Operation, y: Operation) => x + y)
   }
 
   override def toString: String = {
-    this.symbols.map((x) => x.toString).mkString(" + ")
+    this.symbols.map(x => x.toString).mkString(" + ")
   }
 
   private def hasSameTerms(symbols: Operation*): Boolean = {
@@ -32,4 +30,6 @@ class Addition(val symbols: Operation*) extends Operation {
       case that: Addition => that.mergeTerms(this.symbols: _*)
       case _ => new Addition(List(that) ++ this.symbols: _*)
     }
+
+  override def differentiate(wrt: SymVar): Operation = new Addition(symbols.map(_.differentiate(wrt)) :_*)
 }

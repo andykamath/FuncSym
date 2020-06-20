@@ -1,11 +1,11 @@
 package SymMath
 
-class SymVar(v: String) extends ConstantTrait {
+class SymVar(v: String) extends Operation {
   override def +(that: Operation): Operation =
     that match {
-      case v: SymVar => if(v.equals(this)) new Coefficient(new Value(2), this)
-        else new Addition(this, v)
-      case _ => new Addition(this, that)
+      case v: SymVar => if(v.equals(this)) new Value(2) * this
+        else super.+(that)
+      case _ => super.+(that)
     }
 
 
@@ -20,4 +20,18 @@ class SymVar(v: String) extends ConstantTrait {
       case that: SymVar => that.hasSameString(this.v)
       case _ => false
     }
+
+  override def *(that: Operation): Operation = that match {
+    case that: SymVar => if (that.equals(this)) super.^(new Value(2))  else super.*(that)
+    case _ => super.*(that)
+  }
+
+  override def -(that: Operation): Operation = this + that * new Value(-1)
+
+  override def /(that: Operation): Operation = that match {
+    case that: Fraction => this * that.inverse
+    case _ => super./(that)
+  }
+
+  override def differentiate(wrt: SymVar): Operation = if(!this.equals(wrt)) new Value(0) else new Value(1)
 }
