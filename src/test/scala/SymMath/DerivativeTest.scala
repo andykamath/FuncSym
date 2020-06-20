@@ -21,6 +21,12 @@ class DerivativeTest extends FlatSpec with Matchers {
     assert(wrt.differentiate(wrt).equals(new Value(1)))
   }
 
+  "Addition" should "differentiate each term" in {
+    val x = new SymVar("x")
+    val val5 = new Value(5)
+    assert((x + val5).differentiate(x).equals(new Value(1)))
+  }
+
   "Multiplication" should "follow the chain rule" in {
     val x = new SymVar("x")
     val y = new SymVar("y")
@@ -30,5 +36,14 @@ class DerivativeTest extends FlatSpec with Matchers {
   "Division" should "follow the quotient rule" in {
     val x = new SymVar("x")
     val num = x ^ new Value(2)
+    val den = x + new Value(2)
+    assert((num / den).differentiate(x).equals((den * new Value(2) * x - num) / (den ^ new Value(2))))
+  }
+
+  "Any derivative" should "follow the chain rule" in {
+    val x = new SymVar("x")
+    println((x * ((x ^ new Value(2)) + new Value(5))).differentiate(x))
+    assert((x * ((x ^ new Value(2)) + new Value(5))).differentiate(x).equals(((x ^ new Value(2)) + new Value(5)) + new Value(2) * (x ^ new Value(3))))
+
   }
 }

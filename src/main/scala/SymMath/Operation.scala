@@ -18,7 +18,7 @@ trait Operation {
   }
   def -(that: Operation): Operation = this + that * new Value(-1)
   def /(that: Operation): Operation = that match {
-    case that: Fraction => this * that.inverse
+    case that: Fraction => that.inverse * this
     case _ =>
       if(that.equals(new Value(1))) this
       else if(that.equals(Constants.INF)) {
@@ -44,4 +44,5 @@ trait Operation {
   def equals(that: Any): Boolean
   def differentiate(wrt: SymVar): Operation
   def factorial: Operation = new Factorial(this)
+  def containsVariable(variable: SymVar): Boolean = false
 }

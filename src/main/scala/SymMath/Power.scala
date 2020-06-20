@@ -1,6 +1,11 @@
 package SymMath
 
 class Power(base: Operation, exponent: Operation) extends Operation {
+  def fractionForm: Operation = {
+    if(this.exponent.isNegative) new Value(1) / (this.base ^ (this.exponent * new Value(-1)))
+    else this
+  }
+
   private def multiplyCoefficient(coefficient: Operation): Operation = {
     this.base * coefficient
   }
@@ -67,7 +72,15 @@ class Power(base: Operation, exponent: Operation) extends Operation {
     }
   }
 
+  // TODO: Add support for implicit differentiation (x^x)
   override def differentiate(wrt: SymVar): Operation = {
-    (base ^ exponent) * new Log(base) * exponent.differentiate(wrt)
+    if(exponent.containsVariable(wrt) && base.containsVariable(wrt))
+      throw new IllegalArgumentException("x can't be in base and power")
+    else if(exponent.containsVariable(wrt)) (base ^ exponent) * new Log(base) * exponent.differentiate(wrt)
+    else if(base.containsVariable(wrt)) exponent * (base ^ (exponent - new Value(1))) * base.differentiate(wrt)
+    else throw new IllegalArgumentException("something wrong here")
   }
+
+  override def containsVariable(variable: SymVar): Boolean = this.base.containsVariable(variable) ||
+    this.exponent.containsVariable(variable)
 }

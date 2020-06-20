@@ -5,6 +5,8 @@ class Fraction(numerator: Operation, denominator: Operation) extends Operation {
   private def changeNumerator(that: Operation) = that * this.denominator
   private def multiplyDenominator(that: Operation) = that * this.denominator
   private def multiplyNumerator(that: Operation) = that * this.numerator
+  private def hasSameNumerator(that: Operation) = this.numerator.equals(that)
+  private def hasSameDenominator(that: Operation) = this.denominator.equals(that)
 
   def inverse: Operation = denominator / numerator
 
@@ -40,4 +42,15 @@ class Fraction(numerator: Operation, denominator: Operation) extends Operation {
   }
 
   override def toString: String = "(" + this.numerator.toString + ")" + " / " + "(" + this.denominator.toString + ")"
+  override def containsVariable(variable: SymVar): Boolean = this.numerator.containsVariable(variable) ||
+    this.denominator.containsVariable(variable)
+
+  override def equals(that: Any): Boolean = {
+    val tor = that match {
+      case that: Fraction => that.hasSameDenominator(this.denominator) && that.hasSameNumerator(this.numerator)
+      case that: Power => that.fractionForm.equals(this)
+      case _ => false
+    }
+    tor
+  }
 }

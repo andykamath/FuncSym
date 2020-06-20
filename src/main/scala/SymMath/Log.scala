@@ -20,7 +20,8 @@ class Log(term: Operation, base: Operation = Constants.E) extends Operation {
     }
   }
 
-  override def toString: String = "LOG("+term.toString+" BASE "+base.toString+")"
+  override def toString: String = if(base.equals(Constants.E)) "LN(" + term.toString + ")"
+    else "LOG("+term.toString+" BASE "+base.toString+")"
 
   override def /(that: Operation): Operation = that match {
     case that: Fraction => this * that.inverse
@@ -30,4 +31,7 @@ class Log(term: Operation, base: Operation = Constants.E) extends Operation {
   override def differentiate(wrt: SymVar): Operation = {
     term.differentiate(wrt)  / (new Log(term) * wrt) // Chain rule
   }
+
+  override def containsVariable(variable: SymVar): Boolean = this.term.containsVariable(variable) ||
+    this.base.containsVariable(variable)
 }

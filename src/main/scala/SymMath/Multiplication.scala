@@ -44,10 +44,9 @@ class Multiplication(val symbols: Operation*) extends Operation {
       }
     })
     val valString: String = values.map(_.toString).mkString(" * ")
-    val negative: String = if (this.isNegative) "-" else ""
     val ops = symbols.filter(x => !values.contains(x))
     if (ops.isEmpty) valString
-    else negative + "(" + valString + ")" + ops.map(x => "(" + x.toString + ")").mkString("")
+    else "(" + valString + ")" + ops.map(x => "(" + x.toString + ")").mkString("")
   }
 
   // TODO: Fix Addition for factoring
@@ -75,4 +74,6 @@ class Multiplication(val symbols: Operation*) extends Operation {
       syms
     }).reduce((x, y) => x + y)
   }
+
+  override def containsVariable(variable: SymVar): Boolean = this.symbols.exists(_.containsVariable(variable))
 }

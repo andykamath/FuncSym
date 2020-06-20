@@ -34,4 +34,6 @@ class SymVar(v: String) extends Operation {
   }
 
   override def differentiate(wrt: SymVar): Operation = if(!this.equals(wrt)) new Value(0) else new Value(1)
+
+  override def containsVariable(variable: SymVar): Boolean = this.equals(variable)
 }

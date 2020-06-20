@@ -10,8 +10,7 @@ sealed case class Constant(rep: String, value: Number) extends Operation {
 
   private def isSameValue(s: String): Boolean = this.rep.equals(s)
 
-  override def equals(that: Any): Boolean =
-    that match {
+  override def equals(that: Any): Boolean = that match {
       case that: Constant => that.isSameValue(this.rep)
       case _ => false
     }
